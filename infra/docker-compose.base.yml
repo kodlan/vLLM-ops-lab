@@ -1,0 +1,45 @@
+# =============================================================================
+# vLLM Base Configuration
+# =============================================================================
+# This is the base docker-compose configuration for vLLM.
+# Experiments extend this file and add experiment-specific flags.
+#
+# Usage (from project root):
+#   docker-compose -f infra/docker-compose.base.yml up
+#
+# Or use the Makefile:
+#   make infra-up
+# =============================================================================
+
+services:
+  vllm:
+    image: vllm/vllm-openai:v0.14.1-cu130
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount HuggingFace cache to avoid re-downloading models
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    env_file:
+      - ../.env
+    environment:
+      # Disable anonymous usage statistics
+      - VLLM_USAGE_STATS=0
+    command:
+      - ${MODEL_NAME}
+      - --max-model-len=${VLLM_MAX_MODEL_LEN}
+      - --dtype=half
+      - --gpu-memory-utilization=${VLLM_GPU_MEMORY_UTILIZATION}
+      - --max-num-seqs=16
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
