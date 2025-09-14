@@ -18,7 +18,7 @@ setup:
 # =============================================================================
 
 infra-up:
-	docker compose -f infra/docker compose.base.yml up -d
+	docker compose -f infra/docker-compose.base.yml up -d
 	@echo "vLLM server starting... Use 'make infra-logs' to watch progress"
 	@echo "Use 'make health' to check when ready"
 
