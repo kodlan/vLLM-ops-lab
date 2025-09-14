@@ -18,6 +18,20 @@ This repo contains a series of experiments that demonstrate key vLLM features:
 - Docker with NVIDIA GPU support
 - NVIDIA GPU with CUDA support
 - ~4GB+ VRAM (experiments use small models by default)
+- Python 3.10+
+
+## Python Setup
+
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate it
+source venv/bin/activate  
+
+# Install dependencies
+pip install -r requirements.txt
+```
 
 ## Quickstart
 
