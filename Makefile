@@ -1,3 +1,4 @@
+
 .PHONY: setup infra-up infra-down infra-logs health test-prompt
 
 # =============================================================================
@@ -18,15 +19,15 @@ setup:
 # =============================================================================
 
 infra-up:
-	docker compose -f infra/docker-compose.base.yml up -d
+	docker compose --env-file .env -f infra/docker-compose.base.yml up -d
 	@echo "vLLM server starting... Use 'make infra-logs' to watch progress"
 	@echo "Use 'make health' to check when ready"
 
 infra-down:
-	docker compose -f infra/docker-compose.base.yml down
+	docker compose --env-file .env -f infra/docker-compose.base.yml down
 
 infra-logs:
-	docker compose -f infra/docker-compose.base.yml logs -f
+	docker compose --env-file .env -f infra/docker-compose.base.yml logs -f
 
 health:
 	@curl -sf http://localhost:8000/health > /dev/null && echo "vLLM is healthy" || echo "vLLM is not ready"
@@ -42,14 +43,14 @@ test-prompt:
 # =============================================================================
 
 exp1-up:
-	docker compose -f experiments/01_sleep_mode_router/docker-compose.yml up -d
+	docker compose --env-file .env -f experiments/01_sleep_mode_router/docker-compose.yml up -d
 	@echo "Sleep mode server starting..."
 
 exp1-down:
-	docker compose -f experiments/01_sleep_mode_router/docker-compose.yml down
+	docker compose --env-file .env -f experiments/01_sleep_mode_router/docker-compose.yml down
 
 exp1-logs:
-	docker compose -f experiments/01_sleep_mode_router/docker-compose.yml logs -f
+	docker compose --env-file .env -f experiments/01_sleep_mode_router/docker-compose.yml logs -f
 
 exp1-benchmark:
 	cd experiments/01_sleep_mode_router && python3 benchmark.py
