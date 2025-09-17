@@ -6,6 +6,7 @@ pointed at our local vLLM server.
 """
 
 import os
+from typing import Iterator
 
 import requests
 from openai import OpenAI
@@ -70,12 +71,51 @@ class VLLMClient:
         )
         return response.choices[0].text
 
+    def complete_stream(
+        self,
+        prompt: str,
+        max_tokens: int = 100,
+        temperature: float = 0.7,
+    ) -> Iterator[str]:
+        """
+        Generate a streaming text completion.
+
+        Yields tokens as they are generated. Useful for measuring TTFT
+        (Time To First Token) and providing responsive UX.
+
+        Args:
+            prompt: The text prompt to complete
+            max_tokens: Maximum tokens to generate
+            temperature: Sampling temperature
+
+        Yields:
+            Individual tokens/chunks as they are generated
+        """
+        stream = self.client.completions.create(
+            model=self.model,
+            prompt=prompt,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            stream=True,
+        )
+        for chunk in stream:
+            if chunk.choices[0].text:
+                yield chunk.choices[0].text
+
 
 if __name__ == "__main__":
     client = VLLMClient()
     if client.health_check():
         print("vLLM server is healthy!")
+
+        # Test sync completion
         result = client.complete("Hello, I am", max_tokens=20)
-        print(f"Completion: {result}")
+        print(f"Sync completion: {result}")
+
+        # Test streaming completion
+        print("Streaming: ", end="", flush=True)
+        for token in client.complete_stream("The sky is", max_tokens=20):
+            print(token, end="", flush=True)
+        print()
     else:
         print("vLLM server is not available")
