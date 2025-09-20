@@ -1,0 +1,22 @@
+# Sleep Mode Router - Experiment 1
+#
+# Extends base vLLM config with sleep mode enabled.
+# Sleep mode allows hibernating the model to free GPU memory.
+
+include:
+  - ../../infra/docker-compose.base.yml
+
+services:
+  vllm:
+    environment:
+      - VLLM_USAGE_STATS=0
+      # Required for sleep/wake API endpoints
+      - VLLM_SERVER_DEV_MODE=1
+    command:
+      - ${MODEL_NAME}
+      - --max-model-len=${VLLM_MAX_MODEL_LEN}
+      - --dtype=half
+      - --gpu-memory-utilization=${VLLM_GPU_MEMORY_UTILIZATION}
+      - --max-num-seqs=16
+      # Enable sleep mode
+      - --enable-sleep-mode
