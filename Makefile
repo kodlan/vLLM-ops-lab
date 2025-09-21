@@ -52,5 +52,14 @@ exp1-down:
 exp1-logs:
 	docker compose --env-file .env -f experiments/01_sleep_mode_router/docker-compose.yml logs -f
 
+exp1-demo:
+	cd experiments/01_sleep_mode_router && python3 router.py --demo
+
+exp1-sleep:
+	cd experiments/01_sleep_mode_router && python3 router.py --sleep
+
+exp1-wake:
+	cd experiments/01_sleep_mode_router && python3 router.py --wake
+
 exp1-benchmark:
 	cd experiments/01_sleep_mode_router && python3 benchmark.py
