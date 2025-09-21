@@ -51,8 +51,12 @@ class SleepModeRouter:
             True if successful, False otherwise.
         """
         try:
-            resp = requests.post(f"{self.base_url}/wake", timeout=60)
-            return resp.status_code == 200
+            resp = requests.post(f"{self.base_url}/wake", timeout=120)
+            if resp.status_code == 200:
+                return True
+            else:
+                print(f"Wake returned status {resp.status_code}: {resp.text}")
+                return False
         except requests.RequestException as e:
             print(f"Wake request failed: {e}")
             return False
@@ -76,7 +80,7 @@ def demo_sleep_wake_cycle(router: SleepModeRouter):
 
     # Initial memory
     mem_before = get_gpu_memory_mb()
-    print(f"\n1. Initial GPU memory: {mem_before['used_mb']}MB / {mem_before['total_mb']}MB")
+    print(f"\n1. Initial GPU memory: {mem_before['used_mb']}MB used / {mem_before['total_mb']}MB total")
 
     # Test completion while awake
     print("\n2. Testing completion (model awake)...")
