@@ -40,8 +40,10 @@ When sleep mode is enabled, vLLM exposes these endpoints:
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/sleep` | POST | Put model to sleep, free GPU memory |
-| `/wake` | POST | Wake model, restore to GPU |
+| `/sleep?level=1` | POST | Put model to sleep (level 1 = offload to CPU) |
+| `/sleep?level=2` | POST | Put model to sleep (level 2 = discard weights) |
+| `/wake_up` | POST | Wake model, restore to GPU |
+| `/is_sleeping` | GET | Check if model is sleeping |
 
 ## Running This Experiment
 

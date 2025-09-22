@@ -29,16 +29,23 @@ class SleepModeRouter:
         """Check if server is healthy."""
         return self.client.health_check()
 
-    def sleep(self) -> bool:
+    def sleep(self, level: int = 1) -> bool:
         """
         Put the model to sleep.
+
+        Args:
+            level: Sleep level (1 = offload weights to CPU, 2 = discard weights)
 
         Returns:
             True if successful, False otherwise.
         """
         try:
-            resp = requests.post(f"{self.base_url}/sleep", timeout=30)
-            return resp.status_code == 200
+            resp = requests.post(f"{self.base_url}/sleep?level={level}", timeout=30)
+            if resp.status_code == 200:
+                return True
+            else:
+                print(f"Sleep returned status {resp.status_code}: {resp.text}")
+                return False
         except requests.RequestException as e:
             print(f"Sleep request failed: {e}")
             return False
@@ -51,7 +58,8 @@ class SleepModeRouter:
             True if successful, False otherwise.
         """
         try:
-            resp = requests.post(f"{self.base_url}/wake", timeout=120)
+            # Note: endpoint is /wake_up not /wake
+            resp = requests.post(f"{self.base_url}/wake_up", timeout=120)
             if resp.status_code == 200:
                 return True
             else:
@@ -60,6 +68,16 @@ class SleepModeRouter:
         except requests.RequestException as e:
             print(f"Wake request failed: {e}")
             return False
+
+    def is_sleeping(self) -> bool:
+        """Check if model is currently sleeping."""
+        try:
+            resp = requests.get(f"{self.base_url}/is_sleeping", timeout=5)
+            if resp.status_code == 200:
+                return resp.json().get("is_sleeping", False)
+        except requests.RequestException:
+            pass
+        return False
 
     def complete(self, prompt: str, max_tokens: int = 50) -> str:
         """Generate a completion (model must be awake)."""
