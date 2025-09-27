@@ -38,9 +38,6 @@ htmlcov/
 # Docker
 *.log
 
-# Experiment reports (generated)
-**/report.md
-
 # OS
 .DS_Store
 Thumbs.db
