@@ -66,3 +66,7 @@ make exp1-down      # Stop server
 - Wake latency should be significantly lower than cold start
 - GPU memory should drop substantially when sleeping
 - Server should remain stable through sleep/wake cycles
+
+## Results
+
+See [report.md](report.md) for benchmark results.
