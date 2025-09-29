@@ -1,0 +1,51 @@
+# Prefix Caching - Experiment 2
+#
+# Two profiles:
+# - default (apc-on): Automatic Prefix Caching enabled
+# - apc-off: Prefix caching disabled for comparison
+
+include:
+  - ../../infra/docker-compose.base.yml
+
+services:
+  vllm:
+    profiles: ["apc-on", ""]
+    command:
+      - ${MODEL_NAME}
+      - --max-model-len=${VLLM_MAX_MODEL_LEN}
+      - --dtype=half
+      - --gpu-memory-utilization=${VLLM_GPU_MEMORY_UTILIZATION}
+      - --max-num-seqs=16
+      - --enable-prefix-caching
+
+  vllm-no-cache:
+    image: vllm/vllm-openai:v0.14.1-cu130
+    profiles: ["apc-off"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    env_file:
+      - ../../.env
+    environment:
+      - VLLM_USAGE_STATS=0
+    command:
+      - ${MODEL_NAME}
+      - --max-model-len=${VLLM_MAX_MODEL_LEN}
+      - --dtype=half
+      - --gpu-memory-utilization=${VLLM_GPU_MEMORY_UTILIZATION}
+      - --max-num-seqs=16
+      - --no-prefix-caching
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
