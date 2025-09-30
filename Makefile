@@ -63,3 +63,24 @@ exp1-wake:
 
 exp1-benchmark:
 	cd experiments/01_sleep_mode_router && python3 benchmark.py
+
+# =============================================================================
+# Experiment 2: Prefix Caching
+# =============================================================================
+
+exp2-up:
+	docker compose --env-file .env -f experiments/02_prefix_caching/docker-compose.yml up -d
+	@echo "Prefix caching server starting (APC enabled)..."
+
+exp2-up-no-cache:
+	docker compose --env-file .env -f experiments/02_prefix_caching/docker-compose.yml --profile apc-off up -d
+	@echo "Prefix caching server starting (APC disabled)..."
+
+exp2-down:
+	docker compose --env-file .env -f experiments/02_prefix_caching/docker-compose.yml --profile apc-off down
+
+exp2-logs:
+	docker compose --env-file .env -f experiments/02_prefix_caching/docker-compose.yml logs -f
+
+exp2-benchmark:
+	cd experiments/02_prefix_caching && python3 benchmark.py
