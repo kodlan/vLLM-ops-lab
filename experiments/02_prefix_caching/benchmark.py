@@ -17,20 +17,30 @@ from shared import VLLMClient, get_vllm_metrics, timer
 from template_builder import generate_high_reuse_prompts, generate_no_reuse_prompts, get_prefix_length
 
 
-def measure_ttft_batch(client: VLLMClient, prompts: list[str], max_tokens: int = 20) -> list[float]:
+def measure_ttft_batch(
+    client: VLLMClient, prompts: list[str], max_tokens: int = 20, show_progress: bool = True
+) -> list[float]:
     """
     Measure TTFT for a batch of prompts.
 
     Returns list of TTFT values in seconds.
     """
     ttfts = []
+    total = len(prompts)
 
-    for prompt in prompts:
+    for i, prompt in enumerate(prompts):
+        if show_progress:
+            print(f"  [{i+1}/{total}]", end=" ", flush=True)
+
         start = time.perf_counter()
         # Use streaming to measure time to first token
         for _token in client.complete_stream(prompt, max_tokens=max_tokens):
             ttft = time.perf_counter() - start
             ttfts.append(ttft)
+
+            if show_progress:
+                print(f"{ttft*1000:.0f}ms", flush=True)
+
             # Consume rest of stream
             for _ in client.complete_stream(prompt, max_tokens=1):
                 pass
