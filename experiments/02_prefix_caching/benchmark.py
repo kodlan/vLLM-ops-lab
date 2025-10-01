@@ -33,18 +33,19 @@ def measure_ttft_batch(
             print(f"  [{i+1}/{total}]", end=" ", flush=True)
 
         start = time.perf_counter()
+        ttft_recorded = False
+
         # Use streaming to measure time to first token
-        for _token in client.complete_stream(prompt, max_tokens=max_tokens):
-            ttft = time.perf_counter() - start
-            ttfts.append(ttft)
+        stream = client.complete_stream(prompt, max_tokens=max_tokens)
+        for _token in stream:
+            if not ttft_recorded:
+                ttft = time.perf_counter() - start
+                ttfts.append(ttft)
+                ttft_recorded = True
 
-            if show_progress:
-                print(f"{ttft*1000:.0f}ms", flush=True)
-
-            # Consume rest of stream
-            for _ in client.complete_stream(prompt, max_tokens=1):
-                pass
-            break
+                if show_progress:
+                    print(f"{ttft*1000:.0f}ms", flush=True)
+            # Continue consuming the stream until done
 
     return ttfts
 
