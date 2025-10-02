@@ -73,11 +73,12 @@ exp2-up:
 	@echo "Prefix caching server starting (APC enabled)..."
 
 exp2-up-no-cache:
-	docker compose --env-file .env -f experiments/02_prefix_caching/docker-compose.yml --profile apc-off up -d
+	docker compose --env-file .env -f experiments/02_prefix_caching/docker-compose.no-cache.yml up -d
 	@echo "Prefix caching server starting (APC disabled)..."
 
 exp2-down:
-	docker compose --env-file .env -f experiments/02_prefix_caching/docker-compose.yml --profile apc-off down
+	docker compose --env-file .env -f experiments/02_prefix_caching/docker-compose.yml down --remove-orphans
+	docker compose --env-file .env -f experiments/02_prefix_caching/docker-compose.no-cache.yml down --remove-orphans
 
 exp2-logs:
 	docker compose --env-file .env -f experiments/02_prefix_caching/docker-compose.yml logs -f

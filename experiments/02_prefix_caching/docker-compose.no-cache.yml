@@ -1,4 +1,4 @@
-# Prefix Caching - Experiment 2 (APC ENABLED)
+# Prefix Caching - Experiment 2 (APC DISABLED)
 
 include:
   - ../../infra/docker-compose.base.yml
@@ -11,4 +11,4 @@ services:
       - --dtype=half
       - --gpu-memory-utilization=${VLLM_GPU_MEMORY_UTILIZATION}
       - --max-num-seqs=16
-      - --enable-prefix-caching
+      - --no-prefix-caching
