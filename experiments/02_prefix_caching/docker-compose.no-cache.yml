@@ -11,4 +11,4 @@ services:
       - --dtype=half
       - --gpu-memory-utilization=${VLLM_GPU_MEMORY_UTILIZATION}
       - --max-num-seqs=16
-      - --disable-prefix-caching
+      - --no-enable-prefix-caching
