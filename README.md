@@ -7,7 +7,7 @@ A hands-on learning project for understanding vLLM as an inference engine throug
 This repo contains a series of experiments that demonstrate key vLLM features:
 
 1. [**Sleep Mode Router**](experiments/01_sleep_mode_router/) - Multi-model switching on a single GPU
-2. **Prefix Caching** - Automatic prefix caching (APC) performance analysis
+2. [**Prefix Caching**](experiments/02_prefix_caching/) - Automatic prefix caching (APC) performance analysis
 3. **Chunked Prefill** - Long-context fairness and latency optimization
 4. **LoRA Hotfix** - Dynamic adapter loading without server restart
 5. **Quantization** - GPTQ/AWQ tradeoff matrix
