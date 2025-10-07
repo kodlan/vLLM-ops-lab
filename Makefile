@@ -85,3 +85,25 @@ exp2-logs:
 
 exp2-benchmark:
 	cd experiments/02_prefix_caching && python3 benchmark.py
+
+# =============================================================================
+# Experiment 3: Chunked Prefill
+# =============================================================================
+
+exp3-up:
+	docker compose --env-file .env -f experiments/03_chunked_prefill/docker-compose.yml up -d
+	@echo "Chunked prefill server starting (chunked enabled)..."
+
+exp3-up-no-chunk:
+	docker compose --env-file .env -f experiments/03_chunked_prefill/docker-compose.no-chunk.yml up -d
+	@echo "Chunked prefill server starting (chunked disabled)..."
+
+exp3-down:
+	docker compose --env-file .env -f experiments/03_chunked_prefill/docker-compose.yml down --remove-orphans
+	docker compose --env-file .env -f experiments/03_chunked_prefill/docker-compose.no-chunk.yml down --remove-orphans
+
+exp3-logs:
+	docker compose --env-file .env -f experiments/03_chunked_prefill/docker-compose.yml logs -f
+
+exp3-benchmark:
+	cd experiments/03_chunked_prefill && python3 benchmark.py
