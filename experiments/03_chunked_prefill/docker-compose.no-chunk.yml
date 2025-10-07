@@ -1,0 +1,14 @@
+# Chunked Prefill - Experiment 3 (CHUNKED PREFILL DISABLED)
+
+include:
+  - ../../infra/docker-compose.base.yml
+
+services:
+  vllm:
+    command:
+      - ${MODEL_NAME}
+      - --max-model-len=${VLLM_MAX_MODEL_LEN}
+      - --dtype=half
+      - --gpu-memory-utilization=${VLLM_GPU_MEMORY_UTILIZATION}
+      - --max-num-seqs=16
+      - --no-enable-chunked-prefill
