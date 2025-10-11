@@ -107,3 +107,20 @@ exp3-logs:
 
 exp3-benchmark:
 	cd experiments/03_chunked_prefill && python3 benchmark.py
+
+# =============================================================================
+# Experiment 4: LoRA Hotfix
+# =============================================================================
+
+exp4-up:
+	docker compose --env-file .env -f experiments/04_lora_hotfix/docker-compose.yml up -d
+	@echo "LoRA server starting (dynamic loading enabled)..."
+
+exp4-down:
+	docker compose --env-file .env -f experiments/04_lora_hotfix/docker-compose.yml down
+
+exp4-logs:
+	docker compose --env-file .env -f experiments/04_lora_hotfix/docker-compose.yml logs -f
+
+exp4-benchmark:
+	cd experiments/04_lora_hotfix && python3 benchmark.py
