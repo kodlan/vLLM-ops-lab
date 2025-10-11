@@ -1,0 +1,22 @@
+# LoRA Hotfix - Experiment 4
+# Enables dynamic LoRA adapter loading/unloading
+
+include:
+  - ../../infra/docker-compose.base.yml
+
+services:
+  vllm:
+    environment:
+      - VLLM_ALLOW_RUNTIME_LORA_UPDATING=True
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+      - ./adapters:/adapters
+    command:
+      - ${MODEL_NAME}
+      - --max-model-len=${VLLM_MAX_MODEL_LEN}
+      - --dtype=half
+      - --gpu-memory-utilization=${VLLM_GPU_MEMORY_UTILIZATION}
+      - --max-num-seqs=16
+      - --enable-lora
+      - --max-loras=4
+      - --max-lora-rank=64
