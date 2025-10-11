@@ -41,3 +41,6 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+# LoRA adapters (large model files)
+experiments/04_lora_hotfix/adapters/*/
